@@ -1,36 +1,29 @@
 # Reducción de varianza en simulación Monte Carlo
 
-Código del artículo *Análisis comparativo de técnicas de reducción de varianza en simulación Monte Carlo para la valoración de opciones financieras* (Universidad Católica de Santa María, Arequipa).
+Este proyecto contiene el código utilizado para comparar diferentes técnicas de reducción de varianza en la simulación Monte Carlo para opciones financieras.
 
-Compara cinco técnicas en una call europea (con precio exacto de Black-Scholes) y cuatro en una opción asiática aritmética de 12 fechas:
+Se trabajó con dos tipos de opciones: europea y asiática.
 
-| Técnica | Europea | Asiática |
-|---|---|---|
-| Monte Carlo estándar | ✔ | ✔ |
-| Variables antitéticas | ✔ | ✔ |
-| Variable de control | ✔ | ✔ (asiática geométrica) |
-| Muestreo estratificado | ✔ | – |
-| Cuasi-Monte Carlo (Sobol aleatorizado) | ✔ | ✔ |
+## Técnicas utilizadas
 
-Parámetros: S0 = 100, K = 100, r = 5 %, σ = 20 %, T = 1 año. Cada configuración se repite 100 veces.
+- Monte Carlo estándar.
+- Variables antitéticas.
+- Variable de control.
+- Muestreo estratificado.
+- Cuasi-Monte Carlo (Sobol).
 
-## Cómo ejecutarlo
+## Cómo ejecutar el proyecto
 
-```bash
-pip install -r requirements.txt
-python monte_carlo_varianza.py --rapido   # prueba rápida (menos de 1 minuto)
-python monte_carlo_varianza.py            # experimento completo del artículo
-```
+Instalar las dependencias:
 
-Los resultados se guardan en `resultados/` (tablas `.csv` y tres gráficos `.png`). Las semillas son fijas, así que los errores (RMSE) coinciden con los del artículo; los tiempos dependen del equipo.
+    pip install -r requirements.txt
 
-## Métricas
+Ejecutar el programa:
 
-- **RMSE**: error cuadrático medio respecto al valor de referencia.
-- **Varianza** del estimador entre las 100 repeticiones.
-- **Eficiencia** = varianza × tiempo por estimación (menor es mejor).
-- **Orden de convergencia**: pendiente de log(RMSE) frente a log(N).
+    python monte_carlo_varianza.py
 
-## Autores
+Para una prueba rápida:
 
-Maria Fernanda Linares Limache, Leonardo Victor Díaz Porras, Marcelo Rodrigo Moscoso Flores.
+    python monte_carlo_varianza.py --rapido
+
+Los resultados se guardan en la carpeta `resultados`.
