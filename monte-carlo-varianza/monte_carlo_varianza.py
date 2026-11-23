@@ -1,16 +1,6 @@
 """
 Comparación de técnicas de reducción de varianza en simulación Monte Carlo
 para la valoración de opciones (europea y asiática).
-
-Uso:
-    python monte_carlo_varianza.py          # experimento completo (como en el artículo)
-    python monte_carlo_varianza.py --rapido # versión rápida para probar que funciona
-
-Salidas (carpeta resultados/):
-    europea.csv, asiatica.csv        tablas con RMSE, varianza, tiempo y eficiencia
-    fig1_rmse_europea.png            RMSE vs N (log-log)
-    fig2_eficiencia_europea.png      eficiencia vs N
-    fig3_rmse_asiatica.png           RMSE vs N (opción asiática)
 """
 import argparse
 import os
@@ -23,18 +13,11 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, qmc
 
-# ---------------------------------------------------------------------------
-# 1. PARÁMETROS DEL MODELO (movimiento browniano geométrico)
-# ---------------------------------------------------------------------------
 S0, K, R_LIBRE, SIGMA, T = 100.0, 100.0, 0.05, 0.20, 1.0
 DESC = np.exp(-R_LIBRE * T)      # factor de descuento e^{-rT}
 M = 12                           # fechas de observación de la opción asiática
 DT = T / M
 
-
-# ---------------------------------------------------------------------------
-# 2. VALORES DE REFERENCIA
-# ---------------------------------------------------------------------------
 def black_scholes_call():
     """Precio exacto de la call europea (fórmula de Black-Scholes)."""
     d1 = (np.log(S0 / K) + (R_LIBRE + SIGMA**2 / 2) * T) / (SIGMA * np.sqrt(T))
@@ -51,10 +34,6 @@ def asiatica_geometrica_exacta():
     d2 = d1 - s_g
     return DESC * (np.exp(mu_g + var_g / 2) * norm.cdf(d1) - K * norm.cdf(d2))
 
-
-# ---------------------------------------------------------------------------
-# 3. OPCIÓN EUROPEA: funciones auxiliares y las 5 técnicas
-# ---------------------------------------------------------------------------
 def precio_terminal(z):
     """S_T a partir de variables normales estándar z."""
     return S0 * np.exp((R_LIBRE - SIGMA**2 / 2) * T + SIGMA * np.sqrt(T) * z)
@@ -110,10 +89,6 @@ TECNICAS_EUR = {
     "Sobol (QMC)": mc_sobol,
 }
 
-
-# ---------------------------------------------------------------------------
-# 4. OPCIÓN ASIÁTICA ARITMÉTICA (12 fechas): 4 técnicas
-# ---------------------------------------------------------------------------
 def trayectorias(z):
     """Trayectorias de S en las M fechas a partir de normales z de forma (n, M)."""
     incrementos = (R_LIBRE - SIGMA**2 / 2) * DT + SIGMA * np.sqrt(DT) * z
@@ -162,9 +137,6 @@ TECNICAS_ASI = {
 }
 
 
-# ---------------------------------------------------------------------------
-# 5. MOTOR DEL EXPERIMENTO
-# ---------------------------------------------------------------------------
 def evaluar(tecnicas, ns, referencia, repeticiones, semilla):
     """Repite cada técnica `repeticiones` veces para cada N y calcula métricas."""
     filas = []
@@ -219,9 +191,6 @@ def pendientes(df, nombre_tabla):
         print(f"  {nombre:14s} {p:+.2f}")
 
 
-# ---------------------------------------------------------------------------
-# 6. PROGRAMA PRINCIPAL
-# ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rapido", action="store_true", help="prueba rápida (menos N y repeticiones)")
